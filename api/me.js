@@ -14,7 +14,10 @@ module.exports = handler(async (req, res) => {
       .select('id, username, email, role, share_token, share_enabled, avatar_url, created_at, last_login, theme, theme_vars, deletion_scheduled_for')
       .eq('id', user.id)
       .single();
-    if (error) return respond(res, 404, { error: 'Profil introuvable' });
+    if (error) {
+      console.error('[api/me] GET profiles error:', error.message);
+      return respond(res, 404, { error: 'Profil introuvable' });
+    }
     await supabaseAdmin.from('profiles').update({ last_login: new Date().toISOString() }).eq('id', user.id);
     return respond(res, 200, profile);
   }
