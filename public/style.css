@@ -261,9 +261,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
 /* ── ADMIN PANEL ──────────────────────────── */
 .admin-page{position:fixed;inset:0;background:var(--bg);z-index:3000;overflow-y:auto;display:flex;flex-direction:column;}
-.admin-page-header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:inherit;z-index:2;}
+.admin-page-header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);background:inherit;z-index:2;}
 .admin-page-title{font-family:var(--font-display);font-size:18px;font-weight:700;}
-.admin-tabs{display:flex;gap:2px;padding:0 20px;border-bottom:1px solid var(--border);overflow-x:auto;background:inherit;position:sticky;top:57px;z-index:2;scrollbar-width:none;}
+.admin-tabs{display:flex;gap:2px;padding:0 20px;border-bottom:1px solid var(--border);overflow-x:auto;background:inherit;z-index:2;scrollbar-width:none;}
 .admin-tabs::-webkit-scrollbar{display:none;}
 .admin-tab{padding:12px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;position:relative;}
 .admin-tab:hover{color:var(--text2);}

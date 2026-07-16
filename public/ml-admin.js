@@ -51,9 +51,10 @@ function closeAdminPage(){
 }
 
 function switchAdminTab(tabId){
-  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tabId));
-  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.toggle('active',p.dataset.adminPanel===tabId));
-  document.querySelector('.admin-page-body')?.scrollTo(0,0);
+  const root=document.getElementById('page-admin');
+  root.querySelectorAll('.admin-tab').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tabId));
+  root.querySelectorAll('.admin-panel').forEach(p=>p.classList.toggle('active',p.dataset.adminPanel===tabId));
+  root.querySelector('.admin-page-body')?.scrollTo(0,0);
 }
 
 async function loadAdminNews(){
@@ -426,4 +427,3 @@ function renderEventsCharts(stats){
     addChart(container,'Par utilisateur','bar',stats.perUser.map(u=>u.username),stats.perUser.map(u=>u.count),['#52C07A','#E0B84A','#7C6FE0','#E05252','#4AA8E0']);
   }
 }
-
