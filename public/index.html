@@ -88,6 +88,9 @@
 
 <!-- ═══ PAGE APP ════════════════════════════════════════════ -->
 <div id="page-app" style="display:none;">
+  <div id="staging-banner" style="display:none;background:#e05252;color:#fff;text-align:center;padding:8px 12px;font-size:13px;font-weight:600;">
+    <span id="staging-banner-text"></span> <a id="staging-banner-link" href="#" target="_blank" style="color:#fff;text-decoration:underline;">Site officiel</a>
+  </div>
 
   <!-- ═══ HEADER PRINCIPAL ═══ -->
   <header class="app-header-main">
@@ -352,22 +355,38 @@
     </section>
     <section id="acc-sec-support" class="account-section">
       <h2 class="account-section-title">Support <span id="support-unread-badge" class="news-badge-dot news-badge-dot-inline" style="display:none;"></span></h2>
-      <p style="color:var(--text3);font-size:13px;margin-bottom:16px;">Une question, un bug, une suggestion ? Envoie un message — les réponses longues et réfléchies sont privilégiées, donc pas d'échange instantané, mais tu seras notifié ici à ta prochaine visite.</p>
-      <div id="support-new-ticket-wrap">
-        <button class="btn btn-ghost" id="btn-new-ticket-toggle" style="width:100%;margin-bottom:16px;">+ Nouveau ticket</button>
-        <div id="support-new-ticket-form" style="display:none;margin-bottom:20px;">
-          <div class="field-group"><label class="field-label">Sujet</label><input type="text" id="ticket-subject" class="field-input" placeholder="En une phrase…"/></div>
-          <div class="field-group"><label class="field-label">Message</label><textarea id="ticket-message" class="field-textarea" style="min-height:100px;" placeholder="Décris ta question, ton problème ou ta suggestion…"></textarea></div>
-          <div class="field-group"><label class="field-label">Moyen de contact (optionnel)</label><input type="text" id="ticket-contact" class="field-input" placeholder="Discord, autre email, téléphone…"/></div>
-          <div id="ticket-new-error" class="auth-error" style="display:none;"></div>
-          <button class="btn btn-primary" id="btn-send-ticket">Envoyer</button>
-        </div>
-      </div>
-      <hr style="border-color:var(--border);margin-bottom:16px;" />
-      <div id="support-tickets-list"><p style="color:var(--text3);font-size:13px;">Chargement…</p></div>
+      <p style="color:var(--text3);font-size:13px;margin-bottom:16px;">Une question, un bug, une suggestion ? Réponses longues et réfléchies privilégiées, pas d'échange instantané — tu seras notifié ici à ta prochaine visite.</p>
+      <button class="btn btn-primary" id="btn-open-support-page" style="width:100%;">Ouvrir le support</button>
     </section>
   </div>
   <div class="modal-footer"><button class="btn btn-ghost" id="btn-close-account-ok">Fermer</button></div>
+</div>
+
+<!-- ═══ PAGE SUPPORT ═══════════════════════════════════════ -->
+<div class="admin-page" id="page-support" style="display:none;">
+  <div class="admin-page-header">
+    <button class="btn-icon" id="btn-close-support" title="Fermer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h2 class="admin-page-title">🎫 Support</h2>
+  </div>
+  <div class="admin-tabs" id="support-page-tabs">
+    <button class="admin-tab active" data-support-tab="new">Nouveau ticket</button>
+    <button class="admin-tab" data-support-tab="list">Mes tickets</button>
+  </div>
+  <div class="admin-page-body">
+    <div class="admin-panel active" data-support-panel="new">
+      <p style="color:var(--text3);font-size:13px;margin-bottom:16px;">Réponses longues et réfléchies privilégiées, pas d'échange instantané — tu seras notifié à ta prochaine visite. Ton brouillon est sauvegardé automatiquement.</p>
+      <div id="support-new-ticket-form">
+        <div class="field-group"><label class="field-label">Sujet</label><input type="text" id="ticket-subject" class="field-input" placeholder="En une phrase…"/></div>
+        <div class="field-group"><label class="field-label">Message</label><textarea id="ticket-message" class="field-textarea" style="min-height:140px;" placeholder="Décris ta question, ton problème ou ta suggestion…"></textarea></div>
+        <div class="field-group"><label class="field-label">Moyen de contact (optionnel)</label><input type="text" id="ticket-contact" class="field-input" placeholder="Discord, autre email, téléphone…"/></div>
+        <div id="ticket-new-error" class="auth-error" style="display:none;"></div>
+        <button class="btn btn-primary" id="btn-send-ticket">Envoyer</button>
+      </div>
+    </div>
+    <div class="admin-panel" data-support-panel="list">
+      <div id="support-tickets-list"><p style="color:var(--text3);font-size:13px;">Chargement…</p></div>
+    </div>
+  </div>
 </div>
 
 <!-- Admin -->
@@ -394,6 +413,15 @@
       <div class="field-group"><label class="field-label">Logo texte (2-3 car.)</label><input type="text" id="admin-site-logo" class="field-input" maxlength="4" /></div>
       <div class="field-group"><label class="field-label">Logo image (URL)</label><input type="url" id="admin-logo-url" class="field-input" placeholder="https://… (remplace le logo texte)" /></div>
       <div class="field-group"><label class="field-label">Sous-titre</label><input type="text" id="admin-site-sub" class="field-input" /></div>
+      <hr style="border-color:var(--border);margin:20px 0 16px;" />
+      <h4 style="font-size:13px;font-weight:600;margin-bottom:4px;">Bandeau site de test</h4>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:10px;">Bandeau rouge en haut du site, pour signaler que ce n'est pas le site principal.</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <label class="toggle-switch"><input type="checkbox" id="admin-staging-banner-enabled"/><span class="toggle-slider"></span></label>
+        <span style="font-size:13px;">Afficher le bandeau</span>
+      </div>
+      <div class="field-group"><label class="field-label">Texte</label><input type="text" id="admin-staging-banner-text" class="field-input" placeholder="⚠️ Ceci est une version de test, pas le site principal." /></div>
+      <div class="field-group"><label class="field-label">Lien vers le site officiel</label><input type="url" id="admin-staging-banner-link" class="field-input" placeholder="https://…" /></div>
       <hr style="border-color:var(--border);margin:20px 0 16px;" />
       <h4 style="font-size:13px;font-weight:600;margin-bottom:4px;">Pages légales</h4>
       <p style="font-size:12px;color:var(--text3);margin-bottom:12px;">Accessibles depuis le pied de page. Formatage basique disponible : **gras**, *italique*, - liste.</p>

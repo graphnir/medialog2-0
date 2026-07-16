@@ -165,6 +165,17 @@ function applySiteConfig(cfg){
   if(!cfg)return;
   siteConfig=cfg;
   const name=cfg.site_name||'MediaLog',logo=cfg.site_logo||'ML',sub=cfg.site_subtitle||'Mon journal culturel';
+  const banner=document.getElementById('staging-banner');
+  if(banner){
+    const on=cfg.staging_banner_enabled==='true';
+    banner.style.display=on?'':'none';
+    if(on){
+      document.getElementById('staging-banner-text').textContent=cfg.staging_banner_text||'⚠️ Ceci est une version de test, pas le site principal.';
+      const link=document.getElementById('staging-banner-link');
+      if(cfg.staging_banner_link){link.href=cfg.staging_banner_link;link.style.display='';}
+      else link.style.display='none';
+    }
+  }
   document.title=name;
   ['app-logo','auth-logo-text','share-logo'].forEach(id=>{const el=document.getElementById(id);if(!el)return;if(cfg.site_logo_url){el.innerHTML=`<img src="${esc(cfg.site_logo_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;"/>`;el.style.padding='0';}else el.textContent=logo;});
   ['app-site-name','auth-site-name','share-site-name'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name;});

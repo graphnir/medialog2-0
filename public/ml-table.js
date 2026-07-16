@@ -3,7 +3,7 @@
 
 function renderTableView(cat,entries,nameCol){
   const container=document.getElementById('view-container');
-  const colWidth=type=>({number:'90px',rating:'110px',date:'110px'}[type]||'220px');
+  const colWidth=type=>({number:'110px',rating:'140px',date:'135px'}[type]||'280px');
   const newRowCells=cat.columns.map(col=>`<td class="tbl-td tbl-new-cell" style="max-width:${colWidth(col.type)};" data-col="${col.id}" contenteditable="${col.type!=='rating'?'true':'false'}" data-type="${col.type}" placeholder="${esc(col.name)}…"></td>`).join('');
 
   container.innerHTML=`

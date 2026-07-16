@@ -12,26 +12,37 @@ function openAdminPage(){
   document.getElementById('page-admin').style.display='flex';
   document.body.style.overflow='hidden';
   switchAdminTab('apparence');
-  (async()=>{
-    try{
-      const[cfg,stats,usersData]=await Promise.all([API.adminGetConfig(),API.adminGetStats(),API.adminGetUsers()]);
-      adminUsersCache=usersData.users||[];
-      document.getElementById('admin-site-name').value=cfg.site_name||'';
-      document.getElementById('admin-site-logo').value=cfg.site_logo||'';
-      document.getElementById('admin-site-sub').value=cfg.site_subtitle||'';
-      document.getElementById('admin-logo-url').value=cfg.site_logo_url||'';
-      document.getElementById('admin-legal-mentions').value=cfg.legal_mentions||'';
-      document.getElementById('admin-privacy-policy').value=cfg.privacy_policy||'';
-      document.getElementById('admin-stats').innerHTML=`<div class="admin-stat"><span>${stats.total_users}</span>Membres</div><div class="admin-stat"><span>${stats.new_last_7_days}</span>Nouveaux (7j)</div><div class="admin-stat"><span>${stats.sharing_enabled}</span>Partages actifs</div><div class="admin-stat"><span>${stats.admins}</span>Admins</div>`;
-      renderAdminUsers(usersData.users);
-      loadAdminNews();
-      loadAdminTutorial();
-      loadAdminHelpTexts();
-      loadWikiBlacklist();
-      loadAdminSupport();
-      loadAdminUsageStats();
-    }catch(e){document.getElementById('admin-stats').textContent=`Erreur : ${e.message}`;}
-  })();
+
+  API.adminGetConfig().then(cfg=>{
+    document.getElementById('admin-site-name').value=cfg.site_name||'';
+    document.getElementById('admin-site-logo').value=cfg.site_logo||'';
+    document.getElementById('admin-site-sub').value=cfg.site_subtitle||'';
+    document.getElementById('admin-logo-url').value=cfg.site_logo_url||'';
+    document.getElementById('admin-staging-banner-enabled').checked=cfg.staging_banner_enabled==='true';
+    document.getElementById('admin-staging-banner-text').value=cfg.staging_banner_text||'';
+    document.getElementById('admin-staging-banner-link').value=cfg.staging_banner_link||'';
+    document.getElementById('admin-legal-mentions').value=cfg.legal_mentions||'';
+    document.getElementById('admin-privacy-policy').value=cfg.privacy_policy||'';
+  }).catch(e=>console.error('[admin] config:',e.message));
+
+  API.adminGetStats().then(stats=>{
+    document.getElementById('admin-stats').innerHTML=`<div class="admin-stat"><span>${stats.total_users}</span>Membres</div><div class="admin-stat"><span>${stats.new_last_7_days}</span>Nouveaux (7j)</div><div class="admin-stat"><span>${stats.sharing_enabled}</span>Partages actifs</div><div class="admin-stat"><span>${stats.admins}</span>Admins</div>`;
+  }).catch(e=>{document.getElementById('admin-stats').textContent=`Erreur : ${e.message}`;});
+
+  API.adminGetUsers().then(usersData=>{
+    adminUsersCache=usersData.users||[];
+    renderAdminUsers(usersData.users);
+  }).catch(e=>{
+    document.getElementById('admin-users-list').innerHTML=`<p style="color:var(--danger);font-size:13px;">Erreur : ${esc(e.message)}</p>`;
+  }).finally(()=>{
+    loadAdminUsageStats().catch(e=>console.error('[admin] usage-stats:',e.message));
+  });
+
+  loadAdminNews().catch(e=>console.error('[admin] news:',e.message));
+  loadAdminTutorial().catch(e=>console.error('[admin] tutorial:',e.message));
+  loadAdminHelpTexts().catch(e=>console.error('[admin] help-texts:',e.message));
+  loadWikiBlacklist().catch(e=>console.error('[admin] wiki-blacklist:',e.message));
+  loadAdminSupport().catch(e=>console.error('[admin] support:',e.message));
 }
 
 function closeAdminPage(){

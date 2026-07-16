@@ -310,36 +310,80 @@ function toggleTicketThread(ticketId){
   });
 }
 
+const DRAFT_KEY='ml_ticket_draft';
+let draftSaveTimer=null;
+
+function saveDraft(){
+  clearTimeout(draftSaveTimer);
+  draftSaveTimer=setTimeout(()=>{
+    const draft={
+      subject:document.getElementById('ticket-subject')?.value||'',
+      message:document.getElementById('ticket-message')?.value||'',
+      contact:document.getElementById('ticket-contact')?.value||'',
+    };
+    if(draft.subject||draft.message||draft.contact)localStorage.setItem(userKey(DRAFT_KEY),JSON.stringify(draft));
+    else localStorage.removeItem(userKey(DRAFT_KEY));
+  },400);
+}
+
+function restoreDraft(){
+  try{
+    const raw=localStorage.getItem(userKey(DRAFT_KEY));
+    if(!raw)return;
+    const draft=JSON.parse(raw);
+    document.getElementById('ticket-subject').value=draft.subject||'';
+    document.getElementById('ticket-message').value=draft.message||'';
+    document.getElementById('ticket-contact').value=draft.contact||'';
+  }catch{}
+}
+
 function setupSupportForm(){
-  const toggleBtn=document.getElementById('btn-new-ticket-toggle');
-  const form=document.getElementById('support-new-ticket-form');
-  if(!toggleBtn||toggleBtn.dataset.wired)return;
-  toggleBtn.dataset.wired='1';
-  toggleBtn.addEventListener('click',()=>{
-    const opening=form.style.display==='none';
-    form.style.display=opening?'':'none';
-    toggleBtn.textContent=opening?'− Annuler':'+ Nouveau ticket';
+  const sendBtn=document.getElementById('btn-send-ticket');
+  if(!sendBtn||sendBtn.dataset.wired)return;
+  sendBtn.dataset.wired='1';
+  ['ticket-subject','ticket-message','ticket-contact'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('input',saveDraft);
   });
-  document.getElementById('btn-send-ticket').addEventListener('click',async()=>{
+  sendBtn.addEventListener('click',async()=>{
     const subject=document.getElementById('ticket-subject').value.trim();
     const message=document.getElementById('ticket-message').value.trim();
     const contact=document.getElementById('ticket-contact').value.trim();
     const errEl=document.getElementById('ticket-new-error');
     errEl.style.display='none';
     if(!subject||!message){errEl.textContent='Sujet et message obligatoires.';errEl.style.display='';return;}
-    const btn=document.getElementById('btn-send-ticket');btn.disabled=true;btn.textContent='Envoi…';
+    sendBtn.disabled=true;sendBtn.textContent='Envoi…';
     try{
       await API.newTicket(subject,message,contact);
       document.getElementById('ticket-subject').value='';
       document.getElementById('ticket-message').value='';
       document.getElementById('ticket-contact').value='';
-      form.style.display='none';
-      toggleBtn.textContent='+ Nouveau ticket';
+      localStorage.removeItem(userKey(DRAFT_KEY));
       myTicketsData=await API.getMyTickets();
       renderTicketsList();
+      switchSupportTab('list');
     }catch(e){errEl.textContent=e.message;errEl.style.display='';}
-    finally{btn.disabled=false;btn.textContent='Envoyer';}
+    finally{sendBtn.disabled=false;sendBtn.textContent='Envoyer';}
   });
+}
+
+function switchSupportTab(tabId){
+  document.querySelectorAll('#support-page-tabs .admin-tab').forEach(b=>b.classList.toggle('active',b.dataset.supportTab===tabId));
+  document.querySelectorAll('#page-support .admin-panel').forEach(p=>p.classList.toggle('active',p.dataset.supportPanel===tabId));
+}
+
+function openSupportPage(){
+  closeModals();
+  document.getElementById('page-support').style.display='flex';
+  document.body.style.overflow='hidden';
+  switchSupportTab('new');
+  setupSupportForm();
+  restoreDraft();
+  loadSupportSection();
+}
+
+function closeSupportPage(){
+  document.getElementById('page-support').style.display='none';
+  document.body.style.overflow='';
 }
 
 function exportCSV(){

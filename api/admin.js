@@ -106,7 +106,7 @@ module.exports = handler(async (req, res) => {
   }
 
   if (req.method === 'PUT' && action === 'config') {
-    const shortFields=['site_name','site_logo','site_subtitle','site_logo_url'];
+    const shortFields=['site_name','site_logo','site_subtitle','site_logo_url','staging_banner_enabled','staging_banner_text','staging_banner_link'];
     const longFields=['legal_mentions','privacy_policy']; // textes légaux : plafond bien plus généreux que les champs courts
     for (const key of shortFields) {
       if (req.body[key]!==undefined) {

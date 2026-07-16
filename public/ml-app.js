@@ -22,7 +22,13 @@ function initApp(){
   document.getElementById('btn-history').addEventListener('click',openHistoryModal);
   document.getElementById('btn-share-settings').addEventListener('click',openShareModal);
   document.getElementById('btn-account-settings').addEventListener('click',()=>openAccountModal());
-  document.getElementById('footer-contact')?.addEventListener('click',e=>{e.preventDefault();openAccountModal('acc-sec-support');});
+  document.getElementById('footer-contact')?.addEventListener('click',e=>{e.preventDefault();openSupportPage();});
+  document.getElementById('btn-open-support-page')?.addEventListener('click',()=>openSupportPage());
+  document.getElementById('btn-close-support')?.addEventListener('click',closeSupportPage);
+  document.getElementById('support-page-tabs')?.addEventListener('click',e=>{
+    const btn=e.target.closest('[data-support-tab]');if(!btn)return;
+    switchSupportTab(btn.dataset.supportTab);
+  });
   document.getElementById('footer-legal')?.addEventListener('click',e=>{e.preventDefault();openLegalModal('legal_mentions','Mentions légales');});
   document.getElementById('footer-privacy')?.addEventListener('click',e=>{e.preventDefault();openLegalModal('privacy_policy','Politique de confidentialité');});
   document.getElementById('btn-close-legal').addEventListener('click',closeModals);
@@ -193,7 +199,7 @@ function initStaticEvents(){
 
   // Admin config
   document.getElementById('btn-save-config').addEventListener('click',async()=>{
-    const cfg={site_name:document.getElementById('admin-site-name').value,site_logo:document.getElementById('admin-site-logo').value,site_subtitle:document.getElementById('admin-site-sub').value,site_logo_url:document.getElementById('admin-logo-url').value,legal_mentions:document.getElementById('admin-legal-mentions').value,privacy_policy:document.getElementById('admin-privacy-policy').value};
+    const cfg={site_name:document.getElementById('admin-site-name').value,site_logo:document.getElementById('admin-site-logo').value,site_subtitle:document.getElementById('admin-site-sub').value,site_logo_url:document.getElementById('admin-logo-url').value,staging_banner_enabled:document.getElementById('admin-staging-banner-enabled').checked?'true':'false',staging_banner_text:document.getElementById('admin-staging-banner-text').value,staging_banner_link:document.getElementById('admin-staging-banner-link').value,legal_mentions:document.getElementById('admin-legal-mentions').value,privacy_policy:document.getElementById('admin-privacy-policy').value};
     const msgEl=document.getElementById('admin-config-msg');msgEl.style.display='none';
     try{await API.adminSaveConfig(cfg);applySiteConfig(cfg);msgEl.className='auth-error auth-success';msgEl.textContent='✓ Sauvegardé !';msgEl.style.display='';}
     catch(e){msgEl.className='auth-error';msgEl.textContent=e.message;msgEl.style.display='';}
